@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python3ii
 if __name__ == "__main__":
     from calculator_1 import add, sub, mul, div
     import sys
@@ -7,7 +7,7 @@ if __name__ == "__main__":
         sys.exit(1)
         a = int(sys.argv[1])
         b = int(sys.argv[3])
-        op = b = int(sys.argv[2])
+        op = sys.argv[2]
         if op == "+":
             print("{} + {} = {}".format(a,  b, add(a, b)))
         elif op == "-":

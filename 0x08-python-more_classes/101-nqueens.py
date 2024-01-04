@@ -1,150 +1,117 @@
 #!/usr/bin/python3
-"""101-nqueens finds all possible solutions the N queens puzzle, including
-translations and reflections.
-
-Attempted virtual backtracking without recursion. In local tests process will
-start to slow down visibly for N > 8, and is successful up to N = 11 but
-will be killed if used for N > 11. Recursion could allow for a lighter weight
-process, but it's not yet apparent to this student how to retain a record of
-which solutions are already derived with that method.
-
-Attributes:
-    N (int): base number of queens, and length of board side in piece positions
-    candidates (list) of (list) of (list) of (int): list of all successful
-        solutions for given amount of columns checked
 
 """
-from sys import argv
+File: 101-nqueens.py
+Desc: The program in this module solves the N queens problem.
 
-if len(argv) is not 2:
-    print('Usage: nqueens N')
-    exit(1)
-
-if not argv[1].isdigit():
-    print('N must be a number')
-    exit(1)
-
-N = int(argv[1])
-
-if N < 4:
-    print('N must be at least 4')
-    exit(1)
+"""
+import sys
 
 
-def board_column_gen(board=[]):
-    """Adds a column of zeroes to the right of any board about to be tested for
-    queen arrangements in that column.
-
-    Args:
-        board (list) of (list) of (int): 2D list of ints, only as wide as
-        needed to test the rightmost column for queen conflicts.
-
-    Returns:
-        modified 2D list
-
+def init_board(n):
     """
-    if len(board):
-        for row in board:
-            row.append(0)
-    else:
-        for row in range(N):
-            board.append([0])
-    return board
-
-
-def add_queen(board, row, col):
-    """Sets "queen," or 1, to coordinates given in board.
-
-    Args:
-        board (list) of (list) of (int): 2D list of ints, only as wide as
-            needed to test the rightmost column for queen conflicts.
-        row (int): first dimension index
-        col (int): second dimension index
-
+    Initialize an `n`x`n` sized chessboard with 0's.
     """
-    board[row][col] = 1
+    board = []
+    [board.append([]) for i in range(n)]
+    [row.append(' ') for i in range(n) for row in board]
+    return (board)
 
 
-def new_queen_safe(board, row, col):
-    """For the board given, checks that for a new queen placed in the rightmost
-    column, there are no other "queen"s, or 1 values, in the martix to the
-    left, and diagonally up-left and down-left.
-
-    Args:
-        board (list) of (list) of (int): 2D list of ints, only as wide as
-            needed to test the rightmost column for queen conflicts.
-        row (int): first dimension index
-        col (int): second dimension index
-
-    Returns:
-        True if no left side conflicts found for new queen, or False if a
-    conflict is found.
-
+def board_deepcopy(board):
     """
-    x = row
-    y = col
-
-    for i in range(1, N):
-        if (y - i) >= 0:
-            # check up-left diagonal
-            if (x - i) >= 0:
-                if board[x - i][y - i]:
-                    return False
-            # check left
-            if board[x][y - i]:
-                return False
-            # check down-left diagonal
-            if (x + i) < N:
-                if board[x + i][y - i]:
-                    return False
-    return True
-
-
-def coordinate_format(candidates):
-    """Converts a board (matrix of 1 and 0) into a series of row/column
-    indicies of each queen/1.
-
-    Args:
-    candidates (list) of (list) of (list) of (int): list of all successful
-        solutions for amount of columns last checked
-
-    Attributes:
-        holberton (list) of (list) of (int): each member list contains the row
-    column number for each queen found
-
-    Returns:
-        holberton, the list of coordinates
-
+    Return a deepcopy of a chessboard.
     """
-    queen = []
-    for x, attempt in enumerate(candidates):
-        queen.append([])
-        for i, row in enumerate(attempt):
-            queen[x].append([])
-            for j, col in enumerate(row):
-                if col:
-                    queen[x][i].append(i)
-                    queen[x][i].append(j)
-    return queen
-candidates = []
-candidates.append(board_column_gen())
-for col in range(N):
+    if isinstance(board, list):
+        return list(map(board_deepcopy, board))
+    return (board)
 
-    new_candidates = []
-    
-    for matrix in candidates:
-        
-        for row in range(N):
-            if new_queen_safe(matrix, row, col):
-            
-                temp = [line[:] for line in matrix]
-                add_queen(temp, row, col)
-            
-                if col < N - 1:
-        
-                    board_column_gen(temp)
-            
-                new_candidates.append(temp)
-    candidates = new_candidates
-for item in coordinate_format(candidates):
-    print(item)
+
+def get_solution(board):
+    """
+    This function gets and retunrs the solution solved.
+    """
+    solution = []
+    for r in range(len(board)):
+        for c in range(len(board)):
+            if board[r][c] == "Q":
+                solution.append([r, c])
+                break
+    return (solution)
+
+
+def xout(board, row, col):
+    """
+    X out spots on a chessboard.
+    """
+    for c in range(col + 1, len(board)):
+        board[row][c] = "x"
+    for c in range(col - 1, -1, -1):
+        board[row][c] = "x"
+    for r in range(row + 1, len(board)):
+        board[r][col] = "x"
+    for r in range(row - 1, -1, -1):
+        board[r][col] = "x"
+    c = col + 1
+    for r in range(row + 1, len(board)):
+        if c >= len(board):
+            break
+        board[r][c] = "x"
+        c += 1
+    c = col - 1
+    for r in range(row - 1, -1, -1):
+        if c < 0:
+            break
+        board[r][c]
+        c -= 1
+    c = col + 1
+    for r in range(row - 1, -1, -1):
+        if c >= len(board):
+            break
+        board[r][c] = "x"
+        c += 1
+    c = col - 1
+    for r in range(row + 1, len(board)):
+        if c < 0:
+            break
+        board[r][c] = "x"
+        c -= 1
+
+
+def recursive_solve(board, row, queens, solutions):
+    """
+    Recursively solve an N-queens puzzle
+    """
+    if queens == len(board):
+        solutions.append(get_solution(board))
+        return (solutions)
+
+    for c in range(len(board)):
+        if board[row][c] == " ":
+            tmp_board = board_deepcopy(board)
+            tmp_board[row][c] = "Q"
+            xout(tmp_board, row, c)
+            solutions = recursive_solve(tmp_board, row + 1,
+                                        queens + 1, solutions)
+
+    return (solutions)
+
+
+if __name__ == "__main__":
+    """
+    Program execution starts here.
+    """
+    if len(sys.argv) != 2:
+        print("Usage: nqueens N")
+        sys.exit(1)
+    if sys.argv[1].isdigit() is False:
+        print("N must be a number")
+        sys.exit(1)
+    if int(sys.argv[1]) < 4:
+        print("N must be at least 4")
+        sys.exit(1)
+
+    board = init_board(int(sys.argv[1]))
+    solutions = recursive_solve(board, 0, 0, [])
+    for sol in solutions:
+        print(sol)

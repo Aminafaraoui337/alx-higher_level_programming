@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-
-
+#The script implements a function find_peak to efficiently locate a peak integer in an unsorted list of integers, specifying the complexity as documented in 6-peak.txt.
 def find_peak(list_of_integers):
 
     if list_of_integers is None or len(list_of_integers) == 0:
